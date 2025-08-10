@@ -3,7 +3,7 @@ from audio_recorder_streamlit import audio_recorder
 import azure.cognitiveservices.speech as speechsdk
 import tempfile
 
-st.title("Azure Speech-to-Text Demo")
+st.title("Speech to Text for Keeping Meeting Minutes")
 
 # Access Azure secrets from Streamlit's secrets management
 speech_key = st.secrets["speech_key"]
@@ -18,7 +18,7 @@ if audio_bytes:
         tmp_wav.write(audio_bytes)
         tmp_wav_path = tmp_wav.name
 
-    st.write("Transcribing with Azure Speech-to-Text...")
+    st.write("Transcribing with Speech-to-Text...")
 
     # Configure Azure Speech SDK
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
