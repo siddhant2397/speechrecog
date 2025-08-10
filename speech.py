@@ -1,26 +1,31 @@
 import streamlit as st
+from audio_recorder_streamlit import audio_recorder
 import azure.cognitiveservices.speech as speechsdk
 import tempfile
 
 st.title("Azure Speech-to-Text Demo")
 
 # Access Azure secrets from Streamlit's secrets management
-speech_key = st.secrets["speechkey"]
-service_region = st.secrets["serviceregion"]
+speech_key = st.secrets["speech_key"]
+service_region = st.secrets["service_region"]
 
-# Record audio from browser using the built-in Streamlit widget
-audio_file = st.audio_input("Record your message (max 60s)", type="wav")
-if audio_file is not None:
-    st.audio(audio_file, format="audio/wav")
+# Record audio from the browser using audio-recorder-streamlit component
+audio_bytes = audio_recorder()
+
+if audio_bytes:
+    st.audio(audio_bytes, format="audio/wav")
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_wav:
-        tmp_wav.write(audio_file.read())
+        tmp_wav.write(audio_bytes)
         tmp_wav_path = tmp_wav.name
 
     st.write("Transcribing with Azure Speech-to-Text...")
 
+    # Configure Azure Speech SDK
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
     audio_config = speechsdk.AudioConfig(filename=tmp_wav_path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+
+    # Perform recognition
     result = speech_recognizer.recognize_once_async().get()
 
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -30,5 +35,5 @@ if audio_file is not None:
     elif result.reason == speechsdk.ResultReason.Canceled:
         st.error(f"Speech Recognition canceled: {result.cancellation_details.reason}")
 else:
-    st.info("Click above to record your speech.")
+    st.info("Click the record button above and speak.")
 
