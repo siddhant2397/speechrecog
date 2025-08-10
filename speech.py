@@ -33,8 +33,8 @@ if audio_bytes:
     st.write("Transcribing...")
 
     # Azure Speech-to-Text setup
-    speech_key = "<YOUR_SPEECH_KEY>"
-    service_region = "<YOUR_SERVICE_REGION>"
+    speech_key = st.secrets["speechkey"]
+    service_region = st.secrets["serviceregion"]
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
     audio_config = speechsdk.AudioConfig(filename=wav_file)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
