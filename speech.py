@@ -10,7 +10,7 @@ speech_key = st.secrets["speech_key"]
 service_region = st.secrets["service_region"]
 
 # Record audio from the browser using audio-recorder-streamlit component
-audio_bytes = audio_recorder()
+audio_bytes = audio_recorder(pause_threshold=10.0, auto_start=False)
 
 if audio_bytes:
     st.audio(audio_bytes, format="audio/wav")
